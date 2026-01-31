@@ -223,7 +223,7 @@
       [0, 0, 0, 0],
     ],
     [
-      [0, 1, 1, 0],
+      [1, 1, 0, 0],
       [0, 1, 0, 0],
       [0, 1, 0, 0],
       [0, 0, 0, 0],
@@ -413,7 +413,9 @@
   let started = false;
   let paused = false;
   let ghostEnabled = false;
+  let soundEnabled = true;
   let animationId = null;
+  var audioCtx = null;
 
   const HIGH_SCORE_KEY = 'tetris-high-score';
 
@@ -424,6 +426,29 @@
   function setHighScore(value) {
     localStorage.setItem(HIGH_SCORE_KEY, String(value));
     highScoreEl.textContent = value;
+  }
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioCtx;
+  }
+
+  function playDropSound() {
+    if (!soundEnabled) return;
+    var ctx = getAudioCtx();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(150, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.15);
   }
 
   function updateUI() {
@@ -446,6 +471,7 @@
 
   function lockPiece() {
     if (!currentPiece) return;
+    playDropSound();
     mergePiece(board, currentPiece);
     const cleared = clearFullRows(board);
     if (cleared > 0) {
@@ -559,6 +585,12 @@
     animationId = requestAnimationFrame(gameLoop);
   }
 
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    var btn = document.getElementById('sound-toggle');
+    if (btn) btn.textContent = soundEnabled ? 'Sound: ON' : 'Sound: OFF';
+  }
+
   function toggleGhost() {
     ghostEnabled = !ghostEnabled;
     var btn = document.getElementById('ghost-toggle');
@@ -596,6 +628,11 @@
     }
     if (e.key === 'g' || e.key === 'G') {
       toggleGhost();
+      e.preventDefault();
+      return;
+    }
+    if (e.key === 'm' || e.key === 'M') {
+      toggleSound();
       e.preventDefault();
       return;
     }
@@ -644,6 +681,12 @@
     toggleGhost();
   });
 
+  // --- Sound toggle button ---
+  var soundToggleBtn = document.getElementById('sound-toggle');
+  soundToggleBtn.addEventListener('click', function () {
+    toggleSound();
+  });
+
   // --- Touch controls ---
   var touchControlsEl = document.querySelector('.touch-controls');
 
@@ -656,6 +699,7 @@
     hardDrop:  { fn: hardDrop,   repeat: false },
     pause:     { fn: togglePause, repeat: false },
     ghost:     { fn: toggleGhost, repeat: false },
+    sound:     { fn: toggleSound, repeat: false },
   };
 
   var repeatDelayId = null;
