@@ -31,7 +31,8 @@
         <span class="label">Next</span>
         <canvas id="next-canvas" width="128" height="128"></canvas>
       </div>
-      <p class="controls-hint">Arrow keys move · X / Z rotate · Space hard drop · P pause</p>
+      <button id="ghost-toggle" class="ghost-toggle">Ghost: OFF</button>
+      <p class="controls-hint">Arrow keys move · X / Z rotate · Space hard drop · P pause · G ghost</p>
     </aside>
     <div id="overlay" class="overlay">
       <button id="overlay-button" class="overlay-message">Tap or press Enter to start</button>
@@ -49,6 +50,7 @@
       </div>
       <div class="touch-row">
         <button class="touch-btn" data-action="pause">&#9208;</button>
+        <button class="touch-btn" data-action="ghost">&#128123;</button>
       </div>
     </div>
   </div>

@@ -92,6 +92,23 @@ body {
   border-radius: 4px;
 }
 
+.ghost-toggle {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: 2px solid #4a4a6a;
+  border-radius: 6px;
+  background: rgba(13, 13, 20, 0.8);
+  color: #e8e8e8;
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.ghost-toggle:hover {
+  background: rgba(74, 74, 106, 0.4);
+  border-color: #6a6a9a;
+}
+
 .controls-hint {
   margin: 1rem 0 0 0;
   font-size: 0.7rem;

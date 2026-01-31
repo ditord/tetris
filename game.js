@@ -412,6 +412,7 @@
   let gameOver = false;
   let started = false;
   let paused = false;
+  let ghostEnabled = false;
   let animationId = null;
 
   const HIGH_SCORE_KEY = 'tetris-high-score';
@@ -527,8 +528,10 @@
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     drawBoard(ctx, board);
     if (currentPiece) {
-      const ghostRow = getGhostRow(board, currentPiece);
-      drawPiece(ctx, { ...currentPiece, row: ghostRow }, 0, 0, true);
+      if (ghostEnabled) {
+        const ghostRow = getGhostRow(board, currentPiece);
+        drawPiece(ctx, { ...currentPiece, row: ghostRow }, 0, 0, true);
+      }
       drawPiece(ctx, currentPiece, 0, 0, false);
     }
     updateUI();
@@ -554,6 +557,12 @@
     overlay.classList.add('hidden');
     if (animationId != null) cancelAnimationFrame(animationId);
     animationId = requestAnimationFrame(gameLoop);
+  }
+
+  function toggleGhost() {
+    ghostEnabled = !ghostEnabled;
+    var btn = document.getElementById('ghost-toggle');
+    if (btn) btn.textContent = ghostEnabled ? 'Ghost: ON' : 'Ghost: OFF';
   }
 
   function togglePause() {
@@ -582,6 +591,11 @@
     }
     if (e.key === KEY.P || e.key === KEY.Pause) {
       togglePause();
+      e.preventDefault();
+      return;
+    }
+    if (e.key === 'g' || e.key === 'G') {
+      toggleGhost();
       e.preventDefault();
       return;
     }
@@ -624,6 +638,12 @@
     }
   });
 
+  // --- Ghost toggle button ---
+  var ghostToggleBtn = document.getElementById('ghost-toggle');
+  ghostToggleBtn.addEventListener('click', function () {
+    toggleGhost();
+  });
+
   // --- Touch controls ---
   var touchControlsEl = document.querySelector('.touch-controls');
 
@@ -635,6 +655,7 @@
     rotateCCW: { fn: rotateCCW,  repeat: false },
     hardDrop:  { fn: hardDrop,   repeat: false },
     pause:     { fn: togglePause, repeat: false },
+    ghost:     { fn: toggleGhost, repeat: false },
   };
 
   var repeatDelayId = null;
