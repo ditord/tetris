@@ -321,8 +321,10 @@
     ctx.fillStyle = color;
     if (isGhost) {
       ctx.strokeStyle = color;
-      ctx.globalAlpha = 0.05;
-      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.35;
+      ctx.fillRect(x, y, s, s);
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 2;
       ctx.strokeRect(x + 1, y + 1, s - 2, s - 2);
       return;
     }
