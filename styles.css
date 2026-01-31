@@ -93,8 +93,6 @@ body {
 }
 
 .ghost-toggle {
-  width: 85px;
-  min-width: 85px;
   margin-top: 0.5rem;
   padding: 0.4rem 0.8rem;
   border: 2px solid #4a4a6a;
