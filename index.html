@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Tetris</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -34,7 +34,22 @@
       <p class="controls-hint">Arrow keys move · X / Z rotate · Space hard drop · P pause</p>
     </aside>
     <div id="overlay" class="overlay">
-      <div id="overlay-message" class="overlay-message">Press Enter to start</div>
+      <button id="overlay-button" class="overlay-message">Tap or press Enter to start</button>
+    </div>
+    <div class="touch-controls">
+      <div class="touch-row">
+        <button class="touch-btn" data-action="rotateCCW">&#8630;</button>
+        <button class="touch-btn" data-action="hardDrop">&#9660;&#9660;</button>
+        <button class="touch-btn" data-action="rotateCW">&#8631;</button>
+      </div>
+      <div class="touch-row">
+        <button class="touch-btn" data-action="left">&#9664;</button>
+        <button class="touch-btn" data-action="down">&#9660;</button>
+        <button class="touch-btn" data-action="right">&#9654;</button>
+      </div>
+      <div class="touch-row">
+        <button class="touch-btn" data-action="pause">&#9208;</button>
+      </div>
     </div>
   </div>
   <script src="game.js"></script>

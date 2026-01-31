@@ -393,7 +393,7 @@
   const canvas = document.getElementById('game-canvas');
   const nextCanvas = document.getElementById('next-canvas');
   const overlay = document.getElementById('overlay');
-  const overlayMessage = document.getElementById('overlay-message');
+  const overlayButton = document.getElementById('overlay-button');
   const scoreEl = document.getElementById('score');
   const levelEl = document.getElementById('level');
   const linesEl = document.getElementById('lines');
@@ -439,7 +439,7 @@
     if (collides(board, currentPiece, 0, 0, 0)) {
       gameOver = true;
       overlay.classList.remove('hidden');
-      overlayMessage.textContent = 'Game Over — Press Enter to restart';
+      overlayButton.textContent = 'Game Over — Tap or press Enter to restart';
     }
   }
 
@@ -561,7 +561,7 @@
     paused = !paused;
     if (paused) {
       overlay.classList.remove('hidden');
-      overlayMessage.textContent = 'Paused — Press P to resume';
+      overlayButton.textContent = 'Paused — Tap or press P to resume';
     } else {
       overlay.classList.add('hidden');
     }
@@ -614,6 +614,129 @@
         break;
     }
   });
+
+  // --- Overlay click/tap handler ---
+  overlayButton.addEventListener('click', function () {
+    if (!started || gameOver) {
+      startGame();
+    } else if (paused) {
+      togglePause();
+    }
+  });
+
+  // --- Touch controls ---
+  var touchControlsEl = document.querySelector('.touch-controls');
+
+  var ACTION_MAP = {
+    left:      { fn: moveLeft,   repeat: true  },
+    right:     { fn: moveRight,  repeat: true  },
+    down:      { fn: moveDown,   repeat: true  },
+    rotateCW:  { fn: rotateCW,   repeat: false },
+    rotateCCW: { fn: rotateCCW,  repeat: false },
+    hardDrop:  { fn: hardDrop,   repeat: false },
+    pause:     { fn: togglePause, repeat: false },
+  };
+
+  var repeatDelayId = null;
+  var repeatIntervalId = null;
+
+  function startRepeat(fn) {
+    stopRepeat();
+    fn();
+    repeatDelayId = setTimeout(function () {
+      repeatIntervalId = setInterval(fn, 50);
+    }, 200);
+  }
+
+  function stopRepeat() {
+    if (repeatDelayId != null) { clearTimeout(repeatDelayId); repeatDelayId = null; }
+    if (repeatIntervalId != null) { clearInterval(repeatIntervalId); repeatIntervalId = null; }
+  }
+
+  function getActionBtn(el) {
+    while (el && el !== touchControlsEl) {
+      if (el.dataset && el.dataset.action) return el;
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  var activeBtn = null;
+
+  function activateBtn(btn) {
+    if (activeBtn === btn) return;
+    deactivateBtn();
+    activeBtn = btn;
+    btn.classList.add('active');
+    var entry = ACTION_MAP[btn.dataset.action];
+    if (!entry) return;
+    if (entry.repeat) {
+      startRepeat(entry.fn);
+    } else {
+      entry.fn();
+    }
+  }
+
+  function deactivateBtn() {
+    stopRepeat();
+    if (activeBtn) {
+      activeBtn.classList.remove('active');
+      activeBtn = null;
+    }
+  }
+
+  // Touch events on touch-controls container
+  touchControlsEl.addEventListener('touchstart', function (e) {
+    e.preventDefault();
+    var btn = getActionBtn(e.target);
+    if (btn) activateBtn(btn);
+  }, { passive: false });
+
+  touchControlsEl.addEventListener('touchmove', function (e) {
+    e.preventDefault();
+    var touch = e.touches[0];
+    if (!touch) return;
+    var el = document.elementFromPoint(touch.clientX, touch.clientY);
+    var btn = getActionBtn(el);
+    if (btn) {
+      activateBtn(btn);
+    } else {
+      deactivateBtn();
+    }
+  }, { passive: false });
+
+  touchControlsEl.addEventListener('touchend', function (e) {
+    e.preventDefault();
+    deactivateBtn();
+  }, { passive: false });
+
+  touchControlsEl.addEventListener('touchcancel', function (e) {
+    e.preventDefault();
+    deactivateBtn();
+  }, { passive: false });
+
+  // Mouse events for desktop mouse on touch buttons
+  touchControlsEl.addEventListener('mousedown', function (e) {
+    var btn = getActionBtn(e.target);
+    if (btn) activateBtn(btn);
+  });
+
+  touchControlsEl.addEventListener('mouseup', function () {
+    deactivateBtn();
+  });
+
+  touchControlsEl.addEventListener('mouseleave', function () {
+    deactivateBtn();
+  });
+
+  // Prevent scroll/zoom when touching the canvas
+  canvas.addEventListener('touchstart', function (e) { e.preventDefault(); }, { passive: false });
+  canvas.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+
+  // JS fallback: show touch controls if touch is detected
+  if ('ontouchstart' in window) {
+    touchControlsEl.style.display = 'flex';
+  }
 
   function checkHighScore() {
     const hi = getHighScore();
