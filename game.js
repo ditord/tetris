@@ -321,10 +321,10 @@
     ctx.fillStyle = color;
     if (isGhost) {
       ctx.strokeStyle = color;
-      ctx.globalAlpha = 0.35;
+      ctx.globalAlpha = 0.12;
       ctx.fillRect(x, y, s, s);
-      ctx.globalAlpha = 1;
-      ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.25;
+      ctx.lineWidth = 1;
       ctx.strokeRect(x + 1, y + 1, s - 2, s - 2);
       return;
     }
@@ -484,7 +484,7 @@
   function hardDrop() {
     if (!currentPiece || gameOver || paused || !started) return;
     let row = currentPiece.row;
-    while (!collides(board, { ...currentPiece, row: row + 1 }, 1, 0, 0)) row++;
+    while (!collides(board, { ...currentPiece, row: row + 1 }, 0, 0, 0)) row++;
     const dropRows = row - currentPiece.row;
     currentPiece.row = row;
     score += dropRows * SCORE_HARD_DROP_MULT;
