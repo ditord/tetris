@@ -85,28 +85,38 @@ body {
 
 #next-canvas {
   display: block;
-  width: 64px;
-  height: 64px;
+  width: 100px;
+  height: 100px;
   background: #0d0d14;
   border: 2px solid #4a4a6a;
   border-radius: 4px;
 }
 
 .ghost-toggle {
+  width: 100px;
   margin-top: 0.5rem;
-  padding: 0.4rem 0.8rem;
+  padding: 0.4rem 0;
   border: 2px solid #4a4a6a;
   border-radius: 6px;
   background: rgba(13, 13, 20, 0.8);
   color: #e8e8e8;
   font-family: inherit;
   font-size: 0.8rem;
+  text-align: center;
   cursor: pointer;
 }
 
 .ghost-toggle:hover {
   background: rgba(74, 74, 106, 0.4);
   border-color: #6a6a9a;
+}
+
+.toggle-hint {
+  display: none;
+  margin: 0.5rem 0 0 0;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: #7a7a90;
 }
 
 .controls-hint {
@@ -245,6 +255,16 @@ body {
     height: 48px;
   }
 
+  .ghost-toggle {
+    display: none;
+  }
+
+  .toggle-hint {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+
   .controls-hint {
     display: none;
   }
@@ -258,6 +278,14 @@ body {
 @media (pointer: coarse) {
   .touch-controls {
     display: flex;
+  }
+
+  .ghost-toggle {
+    display: none;
+  }
+
+  .toggle-hint {
+    display: block;
   }
 
   .controls-hint {
@@ -291,6 +319,14 @@ body {
 
   .stat span:last-child {
     font-size: 1rem;
+  }
+
+  .ghost-toggle {
+    display: none;
+  }
+
+  .toggle-hint {
+    display: block;
   }
 
   .controls-hint {
